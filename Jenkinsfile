@@ -1,48 +1,54 @@
 pipeline {
-    agent any
-
     environment {
-        DOCKER_USER = $DOCKER_USER
-        DOCKER_PASS =  $DOCKER_PASS
-        COMMIT_TAG = 'latest'
+        registry = "dirajan/contactlist"
+        registryCredential = 'dockerhub_id'
     }
-
+    agent any
     stages {
-        stage('Docker Login') {
+        stage('Cloning our Git') {
             steps {
-                script {
-                    echo 'Logging into Docker...'
-                    sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
-                }
+                git url: 'https://github.com/vrdipu/Devops_demo.git', branch: 'main'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Building our image') {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    sh 'docker build -t contactlistdemo:${COMMIT_TAG} .'
+                    sh '''
+                        sudo docker build -t ${registry}:${BUILD_NUMBER} .
+                    '''
                 }
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Deploy our image') {
             steps {
                 script {
-                    echo 'Pushing Docker image to repository...'
-                    sh 'docker tag contactlistdemo:${COMMIT_TAG} dirajan/contactlistdemo:${COMMIT_TAG}'
-                    sh 'docker push dirajan/contactlistdemo:${COMMIT_TAG}'
+                    echo 'Deploying Docker image...'
+                    sh '''
+                        sudo docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+                        sudo docker tag ${registry}:${BUILD_NUMBER} ${registry}
+                        sudo docker push ${registry}:${BUILD_NUMBER}
+                    '''
+                }
+            }
+        }
+
+        stage('Cleaning up') {
+            steps {
+                script {
+                    echo 'Cleaning up...'
+                    sh '''
+                       sudo  docker rmi ${registry}:${BUILD_NUMBER}
+                    '''
                 }
             }
         }
     }
-
     post {
         always {
-            echo 'Cleaning up...'
-            script {
-                sh 'docker rmi dirajan/contactlistdemo:${COMMIT_TAG} || true'
-            }
+            echo 'Pipeline completed.'
         }
         success {
             echo 'Pipeline completed successfully!'
