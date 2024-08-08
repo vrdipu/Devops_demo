@@ -21,7 +21,16 @@ pipeline {
                 }
             }
         }
-
+        stage('Trivy SCaning image') {
+            steps {
+                script {
+                    echo 'Trivy Scanning Docker Image ...'
+                    sh '''
+                        sudo trivy image ${registry}:${BUILD_NUMBER} .
+                    '''
+                }
+            }
+        }
         stage('Deploy our image') {
             steps {
                 script {
