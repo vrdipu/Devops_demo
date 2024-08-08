@@ -71,8 +71,8 @@ pipeline {
                 script {
                     echo 'Helm Deploying ...'
                     sh '''
-                       docker pull checkmarx/kics:latest
-                       docker run -v /var/lib/jenkins/workspace/Demo/Myargoapp​​:/helm  checkmarx/kics:latest scan -p "/helm" -o "/helm"
+                       sudo docker pull checkmarx/kics:latest
+                       sudo docker run -v /var/lib/jenkins/workspace/Demo/Myargoapp​​:/helm  checkmarx/kics:latest scan -p "/helm" -o "/helm"
                     '''
                 }
             }
