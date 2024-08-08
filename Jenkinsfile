@@ -66,6 +66,17 @@ pipeline {
                 }
             }
         }
+        stage('Get Helm Application') {
+            steps {
+                script {
+                    echo 'Helm Deploying ...'
+                    sh '''
+                       docker pull checkmarx/kics:latest
+                       docker run -v {/var/lib/jenkins/workspace/Demo/Myargoapp}​​​​:. checkmarx/kics:latest scan -p "." -o "."
+                    '''
+                }
+            }
+        }
     
         stage('Deploy Helm Application') {
             steps {
