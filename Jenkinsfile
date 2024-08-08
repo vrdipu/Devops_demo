@@ -72,7 +72,7 @@ pipeline {
                     echo 'Helm Deploying ...'
                     sh '''
                        docker pull checkmarx/kics:latest
-                       docker run -v {/var/lib/jenkins/workspace/Demo/Myargoapp}​​​​:. checkmarx/kics:latest scan -p "." -o "."
+                       docker run -v /var/lib/jenkins/workspace/Demo/Myargoapp​​:/helm  checkmarx/kics:latest scan -p "/helm" -o "/helm"
                     '''
                 }
             }
