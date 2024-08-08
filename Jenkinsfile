@@ -72,7 +72,7 @@ pipeline {
                 script {
                     echo 'Helm Deploying ...'
                     sh '''
-                       
+                        cd Myargoapp
                         helm install demo-app . --namespace my-demo-namespace --create-namespace --values values.yaml
                     '''
                 }
