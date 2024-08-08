@@ -66,7 +66,7 @@ pipeline {
                 }
             }
         }
-        stage('Get Helm Application') {
+        stage('Scan Helm Chart IAC Scanning') {
             steps {
                 script {
                     echo 'Helm Deploying ...'
