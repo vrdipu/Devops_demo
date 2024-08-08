@@ -39,7 +39,7 @@ pipeline {
                 script {
                     echo 'Trivy Scanning Docker Image ...'
                     sh '''
-                        sudo trivy image ${registry}:${BUILD_NUMBER} .
+                        sudo trivy image ${registry}:${BUILD_NUMBER} 
                     '''
                 }
             }
