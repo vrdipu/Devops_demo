@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USER = 'dockeruser'
-        DOCKER_PASS = 'dockerpass'
+        DOCKER_USER = $DOCKER_USER
+        DOCKER_PASS =  $DOCKER_PASS
         COMMIT_TAG = 'latest'
     }
 
