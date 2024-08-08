@@ -72,8 +72,8 @@ pipeline {
                 script {
                     echo 'Helm Deploying ...'
                     sh '''
-                       cd Myargoapp
-                       helm install DemoApp . --values values.yaml
+                       
+                       sh 'helm install demo-app ./Myargoapp --values Myargoapp/values.yaml'
                     '''
                 }
             }
