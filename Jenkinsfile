@@ -65,7 +65,7 @@ pipeline {
                 }
             }
         }
-    }
+    
          stage('Deploy Helm Application') {
             steps {
                 script {
@@ -88,5 +88,5 @@ pipeline {
             echo 'Pipeline failed!'
         }
     }
-}
+
         
