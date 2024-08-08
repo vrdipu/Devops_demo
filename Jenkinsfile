@@ -6,23 +6,8 @@ pipeline {
         IMAGE_NAME = 'your-docker-image'
         COMMIT_TAG = 'latest'
         K8S_CLUSTER_NAME = 'your-cluster'
-        DOCKER_REGISTRY_URL = 'https://index.docker.io/v1/' // Change to your Docker registry URL if different
-        DOCKER_REGISTRY_CREDENTIALS_ID = 'dirajan' // Change to your Jenkins credentials ID
     }
 
-    stages {
-        stage('Docker Login') {
-            steps {
-                script {
-                    def dockerRegistry = env.DOCKER_REGISTRY_URL
-                    withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS_ID, passwordVariable: 'dockerpass', usernameVariable: 'dockeruser')]) {
-                        sh "echo $dockerpass | docker login -u $dockeruser --password-stdin $dockerRegistry"
-                    }
-                }
-            }
-        }
-    }
-}
     stages {
         stage('Git Pull and Checkout') {
             steps {
