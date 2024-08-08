@@ -73,7 +73,7 @@ pipeline {
                     echo 'Helm Deploying ...'
                     sh '''
                        
-                       sh 'helm install demo-app ./Myargoapp --values Myargoapp/values.yaml'
+                        helm install demo-app . --namespace my-demo-namespace --create-namespace --values values.yaml
                     '''
                 }
             }
