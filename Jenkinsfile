@@ -1,5 +1,12 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKER_USER = 'dockeruser'
+        DOCKER_PASS = 'dockerpass'
+        COMMIT_TAG = 'latest'
+    }
+
     stages {
         stage('Docker Login') {
             steps {
@@ -9,7 +16,6 @@ pipeline {
                 }
             }
         }
-
 
         stage('Build Docker Image') {
             steps {
@@ -34,8 +40,9 @@ pipeline {
     post {
         always {
             echo 'Cleaning up...'
-            // Add any cleanup commands here
-            docker rmi dirajan/contactlistdemo:${COMMIT_TAG}
+            script {
+                sh 'docker rmi dirajan/contactlistdemo:${COMMIT_TAG} || true'
+            }
         }
         success {
             echo 'Pipeline completed successfully!'
