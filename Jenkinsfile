@@ -60,6 +60,7 @@ pipeline {
                 script {
                     echo 'Helm Deploying ...'
                     sh '''
+                       rm -rf Myargoapp
                        git clone https://github.com/vrdipu/Myargoapp.git
                     '''
                 }
