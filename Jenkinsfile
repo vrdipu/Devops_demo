@@ -16,7 +16,7 @@ pipeline {
                 script {
                     echo 'Building Docker image...'
                     sh '''
-                        sudo docker build -t ${registry}:${BUILD_NUMBER} .
+                        sudo docker build -t ${registry}:latest .
                     '''
                 }
             }
@@ -28,8 +28,8 @@ pipeline {
                     echo 'Deploying Docker image...'
                     sh '''
                         sudo docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
-                        sudo docker tag ${registry}:${BUILD_NUMBER} ${registry}
-                        sudo docker push ${registry}:${BUILD_NUMBER}
+                        sudo docker tag ${registry}:latest ${registry}
+                        sudo docker push ${registry}:latest
                     '''
                 }
             }
@@ -39,7 +39,7 @@ pipeline {
                 script {
                     echo 'Trivy Scanning Docker Image ...'
                     sh '''
-                        sudo trivy image ${registry}:${BUILD_NUMBER} 
+                        sudo trivy image ${registry}:latest 
                     '''
                 }
             }
@@ -49,7 +49,7 @@ pipeline {
                 script {
                     echo 'Cleaning up...'
                     sh '''
-                       sudo  docker rmi ${registry}:${BUILD_NUMBER}
+                       sudo  docker rmi ${registry}:latest
                     '''
                 }
             }
