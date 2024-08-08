@@ -55,6 +55,28 @@ pipeline {
             }
         }
     }
+        stage('Get Helm Application') {
+            steps {
+                script {
+                    echo 'Helm Deploying ...'
+                    sh '''
+                       git clone https://github.com/vrdipu/Myargoapp.git
+                    '''
+                }
+            }
+        }
+    }
+         stage('Deploy Helm Application') {
+            steps {
+                script {
+                    echo 'Helm Deploying ...'
+                    sh '''
+                       helm install DemoApp . --values values.yaml
+                    '''
+                }
+            }
+        }
+    }
     post {
         always {
             echo 'Pipeline completed.'
@@ -67,3 +89,4 @@ pipeline {
         }
     }
 }
+        
