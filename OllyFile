@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+    stages {
+        stage('Setup Helm Repositories') {
+            steps {
+                script {
+                    sh """
+                    # Adding Bitnami and Grafana Helm repositories
+                    helm repo add bitnami https://charts.bitnami.com/bitnami
+                    helm repo add grafana https://grafana.github.io/helm-charts
+                    helm repo update
+                    """
+                }
+            }
+        }
+
+        stage('Install Prometheus') {
+            steps {
+                script {
+                    sh """
+                    # Install Prometheus using Helm
+                    helm install my-release bitnami/kube-prometheus
+                    
+                    # Get the Prometheus service YAML and modify it to use NodePort
+                    kubectl get svc my-release-kube-prometheus-prometheus -o yaml > my-release-kube-prometheus-prometheus.yaml
+                    sed -i 's/type: ClusterIP/type: NodePort/g' my-release-kube-prometheus-prometheus.yaml
+                    kubectl apply -f my-release-kube-prometheus-prometheus.yaml
+                    
+                    # Display Prometheus access URL
+                    kubectl describe svc my-release-kube-prometheus-prometheus | grep NodePort | grep http | awk '{print $2"://nodeip:"$NF}' | awk -F "/TCP" '{print "Use below link for browsing your Prometheus: " $1}'
+                    """
+                }
+            }
+        }
+
+        stage('Install Grafana') {
+            steps {
+                script {
+                    sh """
+                    # Install Grafana using Helm
+                    helm install gafana grafana/grafana
+                    
+                    # Modify Prometheus and Grafana services to use NodePort
+                    kubectl get svc gafana-grafana -o yaml > gafana-grafana.yaml
+                    sed -i 's/type: ClusterIP/type: NodePort/g' gafana-grafana.yaml
+                    kubectl apply -f gafana-grafana.yaml
+
+                    # Display Grafana access URL
+                    kubectl describe svc gafana-grafana | grep NodePort | grep service | awk '{print "http://nodeip:"$NF}' | awk -F "/TCP" '{print "Use below link for browsing your Grafana: " $1}'
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution finished!'
+        }
+    }
+}
